@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="CrittercismAppID">/*Your Crittercism ID Here */</string>
+    <string name="CrittercismAppID">/*Your AppID Here*/</string>
+    <string name="CrittercismDelaySendingAppLoad">false</string>
+    <string name="CrittercismShouldCollectLogcat">true</string>
+    <string name="CrittercismCustomVersionName">1.0</string>
 </resources>

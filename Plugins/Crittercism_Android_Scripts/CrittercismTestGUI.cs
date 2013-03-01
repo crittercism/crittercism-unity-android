@@ -10,12 +10,15 @@ public class CrittercismTestGUI : MonoBehaviour
 	
 		if(GUI.Button(new Rect(0,0,Screen.width,screenButtonHeight), "Null Reference"))
 		{
+			CrittercismAndroid.LeaveBreadcrumb("Null Reference incoming?!");
 			string crash = null;
 			crash	= crash.ToLower();
 		}
 		
 		if(GUI.Button(new Rect(0,screenButtonHeight,Screen.width,screenButtonHeight), "Divide By Zero"))
 		{
+			
+			CrittercismAndroid.LeaveBreadcrumb("Lets divide by zero!");
 			int i = 0;
 			i = 2 / i;
 		}
@@ -34,20 +37,18 @@ public class CrittercismTestGUI : MonoBehaviour
 		
 		if(GUI.Button(new Rect(0,screenButtonHeight * 5,Screen.width,screenButtonHeight), "Coroutine Null Exception"))
 		{	StartCoroutine(MonoCorutineNullCrash());	}
-		
+			
 		if(GUI.Button(new Rect(0,screenButtonHeight * 7,Screen.width,screenButtonHeight), "Test Messages"))
 		{
+			
+			Debug.Log("User Test");
+			CrittercismAndroid.SetUsername( "RandomUser" + Random.Range(0, 10000).ToString() );
+			
 			Debug.Log("Breadcrumb Test");
 			CrittercismAndroid.LeaveBreadcrumb("BreadCrumb");
 			
-			Debug.Log("Age Test");
-			CrittercismAndroid.SetValue("26", "Age");
-			
-			Debug.Log("Email Test");
-			CrittercismAndroid.SetValue("email@test.com", "Email");
-			
-			Debug.Log("User Test");
-			CrittercismAndroid.SetUsername("Username");
+			Debug.Log("Metadata Test");
+			CrittercismAndroid.SetMetadata(new string[] {"Age", "Email", "Extra"}, new string[] {Random.Range(10, 90).ToString(), string.Format("email{0}@test.com", Random.Range(0, 200)), "Data"} );
 		}
 	}
 	
@@ -62,4 +63,6 @@ public class CrittercismTestGUI : MonoBehaviour
 	{	
 		throw new System.Exception("Custom Coroutine Exception");
 	}
+	
+	
 }

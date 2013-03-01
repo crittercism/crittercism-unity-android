@@ -9,7 +9,7 @@ public static class CrittercismAndroid
 	/// Show debug and log messaged in the console in release mode.
 	/// If true CrittercismIOS logs will not appear in the console.
 	/// </summary>
-	static bool _ShowDebugOnOnRelease		= false;
+	static bool _ShowDebugOnOnRelease		= true;
 	
 #if (UNITY_ANDROID && !UNITY_EDITOR) || FORCE_DEBUG
 	private static bool _IsPluginInited			= false;
@@ -40,6 +40,17 @@ public static class CrittercismAndroid
 	/// </summary>
 	public static void Init(string appID)
 	{
+		Init (appID, false, false, null);
+	}
+		
+	/// <summary>
+	/// Description:
+	/// Start Crittercism for Unity, will start crittercism for android if it is not already active.
+	/// Parameters:
+	/// appID: Crittercisms Provided App ID for this application
+	/// </summary>
+	public static void Init(string appID, bool bDelay, bool bSendLogcat, string customVersion)
+	{
 #if (UNITY_ANDROID && !UNITY_EDITOR) || FORCE_DEBUG
 		try
 		{
@@ -51,13 +62,14 @@ public static class CrittercismAndroid
 				AndroidJavaClass cls_UnityPlayer	= new AndroidJavaClass("com.unity3d.player.UnityPlayer");
 				AndroidJavaObject objActivity		= cls_UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
 				
-				mCrittercismsPlugin	= new AndroidJavaClass("com.Crittercism.UnityPlugin.CrittercismAndroid");
+				mCrittercismsPlugin	= new AndroidJavaClass("com.crittercism.unity.CrittercismAndroid");
 				if(mCrittercismsPlugin == null)
 				{
 					CLog("To find Crittercism Plugin");
 					throw new System.Exception("ExitError");
 				}
 				
+				mCrittercismsPlugin.CallStatic("SetConfig", bDelay, bSendLogcat, customVersion);
 				mCrittercismsPlugin.CallStatic("Init", objActivity, appID);
 				_IsPluginInited	= IsInited();
 				if(_IsPluginInited)
@@ -91,16 +103,16 @@ public static class CrittercismAndroid
 		}catch(System.Exception e) {	CLog(e.Message); }
 	}
 	
-	public static void MarkExceptionType(bool b)
-	{
-		if(mCrittercismsPlugin == null || _IsPluginInited == false)	{	return;	}
-		
-		try
-		{	
-			mCrittercismsPlugin.CallStatic("MarkExceptionType", b);
-			
-		}catch(System.Exception e) {	CLog(e.Message); }
-	}
+//	public static void MarkExceptionType(bool b)
+//	{
+//		if(mCrittercismsPlugin == null || _IsPluginInited == false)	{	return;	}
+//		
+//		try
+//		{	
+//			mCrittercismsPlugin.CallStatic("MarkExceptionType", b);
+//			
+//		}catch(System.Exception e) {	CLog(e.Message); }
+//	}
 	
 	
 	public static void Update()
@@ -139,7 +151,7 @@ public static class CrittercismAndroid
 		if(mCrittercismsPlugin == null || _IsPluginInited == false)	{	return false;	}
 		try
 		{
-			bRet	= mCrittercismsPlugin.CallStatic<bool>("GetOutOutStatus");
+			bRet	= mCrittercismsPlugin.CallStatic<bool>("GetOptOutStatus");
 		}catch(System.Exception e) {	CLog(e.Message); }
 		
 #endif
@@ -156,7 +168,7 @@ public static class CrittercismAndroid
 		
 		try
 		{
-			mCrittercismsPlugin.CallStatic<bool>("SetOutOutStatus", s);
+			mCrittercismsPlugin.CallStatic<bool>("SetOptOutStatus", s);
 			
 		}catch(System.Exception e) {	CLog(e.Message); }
 #endif
@@ -182,14 +194,14 @@ public static class CrittercismAndroid
 	/// <summary>
 	/// Add a custom value to the Crittercism Meta.
 	/// </summary>
-    static public void SetValue(string v, string key)
+    static public void SetMetadata(string[] key, string[] v)
 	{
 #if (UNITY_ANDROID && !UNITY_EDITOR) || FORCE_DEBUG
 		if(mCrittercismsPlugin == null || _IsPluginInited == false)	{	return;	}
 		
 		try
 		{
-			mCrittercismsPlugin.CallStatic("SetUsername", v, key);
+			mCrittercismsPlugin.CallStatic("SetMetadata", key, v);
 			
 		}catch(System.Exception e) {	CLog(e.Message); }
 #endif
@@ -205,7 +217,7 @@ public static class CrittercismAndroid
 		
 		try
 		{
-			mCrittercismsPlugin.CallStatic("LeaveBreacrumb", l);
+			mCrittercismsPlugin.CallStatic("LeaveBreadcrumb", l);
 			
 		}catch(System.Exception e) {	CLog(e.Message); }
 #endif
@@ -240,7 +252,6 @@ public static class CrittercismAndroid
 		
 		try
 		{
-			
 			System.Exception e	= (System.Exception)args.ExceptionObject;
 			if(args.IsTerminating)
 			{
@@ -250,6 +261,7 @@ public static class CrittercismAndroid
 			{	LogHandledException(e);	}
 		
 		}catch(System.Exception e) {	CLog(e.Message); }
+		
 #endif
 	}
 	
