@@ -1,4 +1,4 @@
-#/usr/bash
+#!/bin/bash
 [ -d classes ] && rm -rf classes
 mkdir classes
 buildType="$1"

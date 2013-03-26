@@ -1,3 +1,3 @@
-#/usr/bash
+#!/bin/bash
 cd Plugins/PluginSource
-./build.sh "$@"
+./build.sh "$1"
