@@ -11,6 +11,9 @@ import android.util.Log;
 
 import com.crittercism.app.Crittercism;
 
+import com.unity3d.player.UnityPlayer;
+
+
 public class CrittercismAndroid {
 	
 	public static boolean mIsInited			= false;
@@ -85,7 +88,7 @@ public class CrittercismAndroid {
 		
 	}
 	
-	public static void Init(Activity activity, String appID)
+	public static void Init(Activity activity, String appID, final String callbackObjectName, final String callbackObjectMethod)
 	{
 		CLog("Beginning Initialization");
 		if(mIsInited)				{	CLog("Already initialized"); return;	}
@@ -121,12 +124,14 @@ public class CrittercismAndroid {
 				{
 					public void run()
 					{
-						CLog("Started");
+						CLog("Starting Crittercism.init");
 						Crittercism.init(mAppActivity.getApplicationContext(), mAppID, mConfig);
 						mIsInited	= true;
+						UnityPlayer.UnitySendMessage(callbackObjectName, callbackObjectMethod, "done");
 					}
 				}
 			);
+
 		}catch(Exception e)
 		{	CLog(e.getLocalizedMessage());	}
 		
@@ -146,6 +151,7 @@ public class CrittercismAndroid {
 			{
 				elements[nI]	= new StackTraceElement("Unity3D", stackObjs[nI], "", -1);
 			}
+			ex.setStackTrace(elements);
 		}
 		return ex;
 	}

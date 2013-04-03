@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 
 public static class CrittercismAndroid
 {
+#if UNITY_ANDROID
 	/// <summary>
 	/// Show debug and log messaged in the console in release mode.
 	/// If true CrittercismIOS logs will not appear in the console.
@@ -29,8 +30,8 @@ public static class CrittercismAndroid
 	/// Description:
 	/// Start Crittercism for Unity, will start crittercism for android if it is not already active.
 	/// </summary>
-	public static void Init()
-	{	Init("");	}
+	public static void Init(string callbackObjectName, string callbackObjectMethod)
+	{	Init("", callbackObjectName, callbackObjectMethod);	}
 	
 	/// <summary>
 	/// Description:
@@ -38,9 +39,9 @@ public static class CrittercismAndroid
 	/// Parameters:
 	/// appID: Crittercisms Provided App ID for this application
 	/// </summary>
-	public static void Init(string appID)
+	public static void Init(string appID, string callbackObjectName, string callbackObjectMethod)
 	{
-		Init (appID, false, false, null);
+		Init (appID, false, false, null, callbackObjectName, callbackObjectMethod);
 	}
 		
 	/// <summary>
@@ -49,7 +50,7 @@ public static class CrittercismAndroid
 	/// Parameters:
 	/// appID: Crittercisms Provided App ID for this application
 	/// </summary>
-	public static void Init(string appID, bool bDelay, bool bSendLogcat, string customVersion)
+	public static void Init(string appID, bool bDelay, bool bSendLogcat, string customVersion, string callbackObjectName, string callbackObjectMethod)
 	{
 #if (UNITY_ANDROID && !UNITY_EDITOR) || FORCE_DEBUG
 		try
@@ -61,7 +62,6 @@ public static class CrittercismAndroid
 			{
 				AndroidJavaClass cls_UnityPlayer	= new AndroidJavaClass("com.unity3d.player.UnityPlayer");
 				AndroidJavaObject objActivity		= cls_UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-				
 				mCrittercismsPlugin	= new AndroidJavaClass("com.crittercism.unity.CrittercismAndroid");
 				if(mCrittercismsPlugin == null)
 				{
@@ -70,15 +70,7 @@ public static class CrittercismAndroid
 				}
 				
 				mCrittercismsPlugin.CallStatic("SetConfig", bDelay, bSendLogcat, customVersion);
-				mCrittercismsPlugin.CallStatic("Init", objActivity, appID);
-				_IsPluginInited	= IsInited();
-				if(_IsPluginInited)
-				{
-					System.AppDomain.CurrentDomain.UnhandledException += new System.UnhandledExceptionEventHandler(_OnUnresolvedExceptionHandler);
-					Application.RegisterLogCallback(_OnDebugLogCallbackHandler);
-					_IsUnityPluginInited	= true;
-					CLog("Registered");
-				}
+				mCrittercismsPlugin.CallStatic("Init", objActivity, appID, callbackObjectName, callbackObjectMethod);
 			}
 			
 			EnableDebugLog(_ShowDebugOnOnRelease);
@@ -88,8 +80,24 @@ public static class CrittercismAndroid
 			CLog("Failed to initialize Crittercisms: " + e.Message);
 			_IsUnityPluginInited	= false;
 		}
+		CLog(string.Format("Init complete, _IsPluginInited={0}, _IsUnityPluginInited={1}", _IsPluginInited, _IsUnityPluginInited));
 #endif
 	}
+	
+	public static void InitComplete(string token) {
+		_IsPluginInited	= IsInited();
+		CLog(string.Format("InitComplete, _IsPluginInited={0}, _IsUnityPluginInited={1}", _IsPluginInited, _IsUnityPluginInited));
+		if(_IsPluginInited)
+		{
+			System.AppDomain.CurrentDomain.UnhandledException += new System.UnhandledExceptionEventHandler(_OnUnresolvedExceptionHandler);
+			Application.RegisterLogCallback(_OnDebugLogCallbackHandler);
+			_IsUnityPluginInited	= true;
+
+			CLog("Registered");
+		}
+		CLog(string.Format("InitComplete complete, _IsPluginInited={0}, _IsUnityPluginInited={1}", _IsPluginInited, _IsUnityPluginInited));
+	}
+
 	
 	public static void EnableDebugLog(bool b)
 	{
@@ -245,7 +253,6 @@ public static class CrittercismAndroid
 	static private void _OnUnresolvedExceptionHandler(object sender, System.UnhandledExceptionEventArgs args)
 	{
 #if (UNITY_ANDROID && !UNITY_EDITOR) || FORCE_DEBUG
-		
 		if(mCrittercismsPlugin == null || _IsPluginInited == false)	{	return;	}
 		if(args == null || args.ExceptionObject == null)	{	return;	}
 		if(args.ExceptionObject.GetType() != typeof(System.Exception))	{	return;	}
@@ -278,4 +285,5 @@ public static class CrittercismAndroid
 		}catch(System.Exception e) {	CLog(e.Message); }
 #endif
 	}
+#endif
 }
