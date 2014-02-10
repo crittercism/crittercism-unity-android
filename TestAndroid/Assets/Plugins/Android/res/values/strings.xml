@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="CrittercismAppID">513e480f558d6a554b000015</string>
+    <string name="CrittercismAppID">YOUR_APP_ID</string>
     <string name="CrittercismDelaySendingAppLoad">false</string>
     <string name="CrittercismShouldCollectLogcat">true</string>
     <string name="CrittercismCustomVersionName">1.0.2</string>
