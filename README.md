@@ -9,7 +9,52 @@ Overview
 
 In addition to crash reporting, the library provides calls for setting timestamped checkpoints (or Breadcrumbs), recording arbitrary user state (or Metadata), and saving stack traces with developer-provided messages on arbitrary code paths (or Handled Exceptions).
 
-Learn more about what Crittercism provides on the product pages.
+Learn more about what Crittercism provides with the [solution overview][14].
+
+About the Plugin
+==================
+
+The plugin will capture more on Android and the most detailed exceptions when **"Script Call Optimizations"** are set to **"Slow, but Safe."**. Exception handlers are otherwise stripped from the Unity3D engine and have to be handled outside the Mono Environment. In these cases, symbols captured will be relevant to the Unity3d Engine code, _not_ the C# or Javascript code. These settings can be found in the **Android Player settings**, reachable with the menu from **“Edit->Project Settings->Player”**, then under the **“Other Settings”** category.
+
+Supporting the Plugin
+=======================
+
+This is our first open source project here at Crittercism as with regular updates to Unity and different development scenarios a Unity Plugin can be a complicated project to maintain. That's why we'd love your help!
+
+Getting Involved, Some Guidelines
+-----------------------------------
+
+#### Filing a Ticket
+
+Github provides us a medium to publicly file tickets and report issues; you can do so [here][12]. As for what each ticket contains, here are some guidelines of what will make solving an issue easier for everyone:
+
+* Items to include in a ticket:
+    - Source of the issue (who reported it)
+    - Version of Unity effected
+    - Version of iOS/Android/etc effected
+    - Version of XCode/Eclipse/Android API
+    - Date discovered (versus date filed)
+    - Any related Crittercism Crash Report links as examples
+* Give a scenario, if one is clear, in which the issue is reproduced
+
+#### Writing Commits
+
+Writing a commit should be simple, but here are some guidelines that will help us all be clear:
+
+* Be clear about what each commit contains (such as feature or process updated, specific bug fixed, etc)
+* Be concise and commit often, preferably after a smaller task is complete and tested
+
+#### Submitting a Pull Request
+
+Pull Requests are generally related to specific bugs, features, updates and are best created via forking the existing repository and making the changes in your personal repository; learn more about [Pull Requests][13] from Github. When submitting a pull request there are a few items to keep in mind that will make everyones lives easier:
+
+* Keep the requests small, having a large number of commits can create a large time commitment for those reviewing the request
+* Sign off the code to adhere to the DCO (found below) using the following example:
+    ```
+    Signed-off-by: John Doe <john.doe@hisdomain.com>
+    ```
+
+Make sure the above sign-off is verbatim and uses your real name and most accurate email.
 
 Installing the Library
 ========================
@@ -188,3 +233,40 @@ Here's an example of how to use user metadata for Java:
 
     // Another way, use straight arrays!
     CrittercismAndroid.SetMetadata(new string[] {"Age", "Email", "Extra"}, new string[] {"26", "email@test.com", "Data"} );
+
+Developer Certificate of Origin
+=================================
+
+By making a contribution to this project, I certify that:
+
+(a) The contribution was created in whole or in part by me and I
+    have the right to submit it under the open source license
+    indicated in the file; or
+
+(b) The contribution is based upon previous work that, to the best
+    of my knowledge, is covered under an appropriate open source
+    license and I have the right under that license to submit that
+    work with modifications, whether created in whole or in part
+    by me, under the same open source license (unless I am
+    permitted to submit under a different license), as indicated
+    in the file; or
+
+(c) The contribution was provided directly to me by some other
+    person who certified (a), (b) or (c) and I have not modified
+    it.
+
+(d) I understand and agree that this project and the contribution
+    are public and that a record of the contribution (including all
+    personal information I submit with it, including my sign-off) is
+    maintained indefinitely and may be redistributed consistent with
+    this project or the open source license(s) involved.
+
+Change Log
+------------
+
+2.9.2014. Refreshed the documentation!
+
+[2]: htttp://support.crittercism.com                                "Crittercism Help"
+[12]: https://github.com/crittercism/crittercism-unity-android/issues   "Unity Android Issues"
+[13]: https://help.github.com/articles/using-pull-requests          "Pull Requests - Github"
+[14]: https://www.crittercism.com/solution-overview/                "Solution Overview"
