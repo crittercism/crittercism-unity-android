@@ -1,8 +1,8 @@
 package com.crittercism.unity;
 import java.lang.String;
 
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONException;
 
 import android.app.Activity;
 import android.app.Application;
@@ -10,6 +10,11 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import com.crittercism.app.Crittercism;
+import com.crittercism.app.CrittercismConfig;
+// TODO: This will provide the new callback info in the latest SDK
+//import com.crittercism.app.CritterCallback;
+//import com.crittercism.app.CritterUserData;
+//import com.crittercism.app.CritterUserDataRequest;
 
 public class CrittercismAndroid {
 	
@@ -17,7 +22,7 @@ public class CrittercismAndroid {
 	public static Activity mAppActivity		= null;
 	public static String mAppID				= null;
 	
-	public static JSONObject mConfig		= null;
+	public static CrittercismConfig mConfig		= null;
 	
 	public static boolean mDebugLog			= true;
 	public static boolean mMarkExceptionType= false;
@@ -29,14 +34,14 @@ public class CrittercismAndroid {
 	
 	public static void SetConfig(boolean delaySendAppLoad, boolean collectLogcat, String versionName)
 	{
-		mConfig = new JSONObject();
+		mConfig = new CrittercismConfig();
 		try{
-			mConfig.put("delaySendingAppLoad", delaySendAppLoad);
-			mConfig.put("shouldCollectLogcat", collectLogcat);
-			if( versionName != null ) { mConfig.put("customVersionName", versionName); }
+			if (delaySendAppLoad != false) { mConfig.setDelaySendingAppLoad(delaySendAppLoad); }
+			if (collectLogcat != false) { mConfig.setLogcatReportingEnabled(collectLogcat); }
+			if( versionName != null ) { mConfig.setCustomVersionName(versionName); }
 			CLog("Config was successfully set");
 		}
-		catch( JSONException e){
+		catch(Exception e){
 			mConfig = null;
 		}
 	}
@@ -47,7 +52,7 @@ public class CrittercismAndroid {
 		
 		try
 		{	
-			//	Check if we need to set from resouces
+			//	Check if we need to set from resources
 			try
 			{
 				Resources rs	= app.getResources();
@@ -62,7 +67,7 @@ public class CrittercismAndroid {
 			{
 				Resources rs	= app.getResources();
 				String sPackageName = app.getPackageName();
-				int nDelayID = rs.getIdentifier("CrittercismDelaySendingAppLoad", "string",sPackageName );
+				int nDelayID = rs.getIdentifier("CrittercismDelaySendingAppLoad", "string",sPackageName);
 				boolean bDelay = rs.getString(nDelayID).compareTo("true") == 0;
 				
 				int nCollectLog = rs.getIdentifier("CrittercismShouldCollectLogcat", "string", sPackageName);
@@ -76,8 +81,8 @@ public class CrittercismAndroid {
 			
 			CLog("AppID: " + mAppID);
 			if(mAppID == null || mAppID == "" || mIsInited)	{	return;	}
-			
-			Crittercism.init(app.getApplicationContext(), mAppID, mConfig);
+			_activateNDKReporting(true);
+			Crittercism.initialize(app.getApplicationContext(), mAppID, mConfig);
 			mIsInited	= true;
 						
 		}catch(Exception e)
@@ -96,7 +101,7 @@ public class CrittercismAndroid {
 		
 		try
 		{	
-			//	Check if we need to set from resouces
+			//	Check if we need to set from resources
 			if(mAppActivity != null)
 			{
 				try
@@ -117,19 +122,22 @@ public class CrittercismAndroid {
 			if(mAppID == null || mAppID == "" || mAppActivity == null || mIsInited)	{	return;	}
 
 			//	Run on main thread to avoid crashes
-			mAppActivity.runOnUiThread(new Runnable()
-				{
-					public void run()
-					{
-						CLog("Started");
-						Crittercism.init(mAppActivity.getApplicationContext(), mAppID, mConfig);
-						mIsInited	= true;
-					}
-				}
-			);
+			_activateNDKReporting(true);
+			Crittercism.initialize(mAppActivity.getApplicationContext(), mAppID, mConfig);
+			mIsInited	= true;
 		}catch(Exception e)
 		{	CLog(e.getLocalizedMessage());	}
 		
+	}
+	
+	private static void _activateNDKReporting(boolean activate)
+	{
+		if(mConfig == null) {
+			mConfig = new CrittercismConfig();
+		}
+		
+		// Attempt to set NDK Crash reporting.
+		mConfig.setNdkCrashReportingEnabled(activate);
 	}
 	
 	private static Exception _CreateException(String name, String reason, String callStack)
@@ -137,7 +145,9 @@ public class CrittercismAndroid {
 		Exception ex	= new Exception(reason);
 		if(callStack != null)
 		{
-			String[] stackObjs	= callStack.split("\n");
+			CLog(callStack.toString());
+
+            String[] stackObjs	= callStack.split("\n");
 			
 			int nLength	= stackObjs.length;
 			StackTraceElement[] elements	= new StackTraceElement[nLength];
@@ -146,7 +156,10 @@ public class CrittercismAndroid {
 			{
 				elements[nI]	= new StackTraceElement("Unity3D", stackObjs[nI], "", -1);
 			}
+
+            ex.setStackTrace(elements);
 		}
+
 		return ex;
 	}
 	
@@ -203,24 +216,26 @@ public class CrittercismAndroid {
 		if(!mIsInited)	{	return;	}
 		Crittercism.setOptOutStatus(optOut);
 	}
-	
-	public static boolean GetOptOutStatus()
-	{
-		if(!mIsInited)	{	return false;	}
-		return Crittercism.getOptOutStatus();
-	}
-	
-	public static String GetUserUUID()
-	{
-		if(!mIsInited) { return ""; }
-		return Crittercism.getUserUUID();
-	}
+
+// TODO: Outdated, update with the newer callback structure.
+//	public static boolean GetOptOutStatus()
+//	{
+//		if(!mIsInited)	{	return false;	}
+//		
+//		return Crittercism.getOptOutStatus();
+//	}
+//	
+//	public static String GetUserUUID()
+//	{
+//		if(!mIsInited) { return ""; }
+//		return Crittercism.getUserUUID();
+//	}
 
 	public static void LogHandledException(String name, String reason, String callStack)
 	{
 		if(!mIsInited || reason == null || name == null)	{	return;	}
 		
-		Exception ex	= _CreateException("Handled Exception", reason, callStack);
+		Exception ex	= _CreateException("Handled Exception: " + name, reason, callStack);
 		Crittercism.logHandledException(ex);
 		
 		CLog("Handled Exception Logged");

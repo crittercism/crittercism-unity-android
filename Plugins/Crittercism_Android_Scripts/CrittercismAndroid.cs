@@ -143,7 +143,7 @@ public static class CrittercismAndroid
 	/// <summary>
 	/// Retrieve whether the user is opting out of Crittercism.
 	/// </summary>
-	public static bool GetOptOut()
+/*	public static bool GetOptOut()
 	{
 		bool bRet	= false;
 #if (UNITY_ANDROID && !UNITY_EDITOR) || FORCE_DEBUG
@@ -157,7 +157,7 @@ public static class CrittercismAndroid
 #endif
 		return bRet;
 	}
-	
+*/
 	/// <summary>
 	/// Set if whether the user is opting to use crittercism
 	/// </summary></param>

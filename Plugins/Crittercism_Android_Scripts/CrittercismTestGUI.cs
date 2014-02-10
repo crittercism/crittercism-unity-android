@@ -1,4 +1,7 @@
 using UnityEngine;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 
 public class CrittercismTestGUI : MonoBehaviour
 {
@@ -42,13 +45,27 @@ public class CrittercismTestGUI : MonoBehaviour
 		{
 			
 			Debug.Log("User Test");
-			CrittercismAndroid.SetUsername( "RandomUser" + Random.Range(0, 10000).ToString() );
+			CrittercismAndroid.SetUsername("Eddie Freeman");
+
+			Debug.Log("Metadata Test 1");
+
+			List<string> arrayOfKeys = new List<string>();
+			List<string> arrayOfValues = new List<string>();
+			
+			arrayOfKeys.Add("Locale");
+			arrayOfKeys.Add("playerID");
+			arrayOfKeys.Add("playerLVL");
+			arrayOfValues.Add("en");
+			arrayOfValues.Add("23958");
+			arrayOfValues.Add("34");
+
+			CrittercismAndroid.SetMetadata(arrayOfKeys.ToArray(), arrayOfValues.ToArray());
 			
 			Debug.Log("Breadcrumb Test");
 			CrittercismAndroid.LeaveBreadcrumb("BreadCrumb");
 			
-			Debug.Log("Metadata Test");
-			CrittercismAndroid.SetMetadata(new string[] {"Age", "Email", "Extra"}, new string[] {Random.Range(10, 90).ToString(), string.Format("email{0}@test.com", Random.Range(0, 200)), "Data"} );
+			Debug.Log("Metadata Test 2");
+			CrittercismAndroid.SetMetadata(new string[] {"Age", "Email", "Extra"}, new string[] {"26", "email@test.com", "Data"} );
 		}
 	}
 	
