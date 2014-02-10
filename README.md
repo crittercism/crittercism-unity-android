@@ -55,19 +55,19 @@ NOTE: It is important that Crittercism Android runs from the top of your Applica
 
 Within Unity, you have two options to initialize Crittercism:
 
-1. Use the ** CrittercismInit.cs ** found in Plugins/Crittercism_Android_Scripts and replace the values necessary for the following variables:
+1. Use the **CrittercismInit.cs** found in Plugins/Crittercism_Android_Scripts and replace the values necessary for the following variables:
 
-    private const string CrittercismAppID    = ""; /*Your App ID Here*/
-    private const bool bDelaySendingAppLoad = false; // not recommended, default false
-    private const bool bShouldCollectLogcat = false;
-    private const string CustomVersionName = ""; /*Your Custom Version Name Here*/
+        private const string CrittercismAppID    = ""; /*Your App ID Here*/
+        private const bool bDelaySendingAppLoad = false; // not recommended, default false
+        private const bool bShouldCollectLogcat = false;
+        private const string CustomVersionName = ""; /*Your Custom Version Name Here*/
 
 2. This method overrides the above method. Under ** Plugins/Android/res/values ** you'll find a strings.xml that contains fields for the above described variables.
 
-    <string name="CrittercismAppID">Your_App_ID</string>
-    <string name="CrittercismDelaySendingAppLoad">false</string>
-    <string name="CrittercismShouldCollectLogcat">true</string>
-    <string name="CrittercismCustomVersionName">Your_Version</string>
+        <string name="CrittercismAppID">Your_App_ID</string>
+        <string name="CrittercismDelaySendingAppLoad">false</string>
+        <string name="CrittercismShouldCollectLogcat">true</string>
+        <string name="CrittercismCustomVersionName">Your_Version</string>
 
 Now you've completed the basic code integration!
 
