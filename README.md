@@ -148,7 +148,7 @@ You can attach metadata to each user. This data will help you differentiate user
 
 You can also attach an arbitrary amount of metadata to each user through a method accepting key and value parameters. The data will be stored in a dictionary and displayed in the Crittercism Portal when viewing a user profile.
 
-** Crittercism takes user privacy very seriously ** and as such if you are spotted sending Device Identifiers or other personally identifying information that isn't helpful for debugging a crash we will ask you to please remove the gathering of this information through our service.
+**Crittercism takes user privacy very seriously** and as such if you are spotted sending Device Identifiers or other personally identifying information that isn't helpful for debugging a crash we will ask you to please remove the gathering of this information through our service.
 
 ### How To Use MetaData ###
 
