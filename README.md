@@ -29,9 +29,8 @@ Adding the Library to your Project
 
 Drag and drop the following items into your project:
 
-Android_Unity/Plugins/Android                       --->    Assets/Plugins/Android
-
-Android_Unity/Plugins/Crittercism_Android_Scripts   --->    Assets/Plugins/Crittercism_Android_Scripts
+    Android_Unity/Plugins/Android                       --->    Assets/Plugins/Android
+    Android_Unity/Plugins/Crittercism_Android_Scripts   --->    Assets/Plugins/Crittercism_Android_Scripts
 
 If you already have other Android Plugins, the contents of these folders should be copied over.
 
