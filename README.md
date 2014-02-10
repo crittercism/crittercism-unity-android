@@ -45,8 +45,8 @@ For more granular data (optional), add the following permissions:
     <uses-permission android:name="android.permission.READ_LOGS"/>
     <uses-permission android:name="android.permission.GET_TASKS"/>
 
-** READ_LOGS ** - provides Crittercism access to device _Logcat_ information for Android OS 2.2 to 4.0
-** GET_TASKS ** - provides Crittercism access to information about the last two activities running; shown in Crash diagnostics.
+**READ_LOGS** - provides Crittercism access to device _Logcat_ information for Android OS 2.2 to 4.0
+**GET_TASKS** - provides Crittercism access to information about the last two activities running; shown in Crash diagnostics.
 
 Initializing Crittercism
 --------------------------
