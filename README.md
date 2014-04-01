@@ -67,8 +67,6 @@ The download includes the following items:
 * **TestAndroid** - An example app that provides a reference of usage for features
 * **Docs** - Contains an offline reference to the docs
 
-Crittercism for Android works with Android 4.3+, armv7 and armv7s, with both device and simulator support. Crittercism for Android Unity works back to Unity 3.4.0.
-
 Adding the Library to your Project
 ------------------------------------
 
@@ -210,7 +208,7 @@ You can also attach an arbitrary amount of metadata to each user through a metho
 ### Feature Usage ###
 
 Here's an example of how to use user metadata for Java:
-    
+
     // Don't forget to include the collections for Lists
     using System.Collections;
     using System.Collections.Generic;
@@ -221,7 +219,7 @@ Here's an example of how to use user metadata for Java:
     // Create a list then convert them to arrays to pass them through.
 	List<string> arrayOfKeys = new List<string>();
             List<string> arrayOfValues = new List<string>();
-            
+
             arrayOfKeys.Add("Locale");
             arrayOfKeys.Add("playerID");
             arrayOfKeys.Add("playerLVL");
