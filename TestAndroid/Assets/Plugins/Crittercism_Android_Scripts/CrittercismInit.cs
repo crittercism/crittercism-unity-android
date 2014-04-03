@@ -5,8 +5,8 @@ public class CrittercismInit : MonoBehaviour {
 	
 	private const string CrittercismAppID	= "YOUR_APP_ID";/*Your App ID Here*/
 	private const bool bDelaySendingAppLoad = false;
-	private const bool bShouldCollectLogcat = false;
-	private const string CustomVersionName = "4.2.1";/*Your Custom Version Name Here*/
+	private const bool bShouldCollectLogcat = true;
+	private const string CustomVersionName = "CUSTOM_VERSION";/*Your Custom Version Name Here*/
 	void Awake () {
 		
 #if UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2
