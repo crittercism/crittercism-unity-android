@@ -81,7 +81,6 @@ public class CrittercismAndroid {
 			
 			CLog("AppID: " + mAppID);
 			if(mAppID == null || mAppID == "" || mIsInited)	{	return;	}
-			_activateNDKReporting(true);
 			Crittercism.initialize(app.getApplicationContext(), mAppID, mConfig);
 			mIsInited	= true;
 						
@@ -122,22 +121,11 @@ public class CrittercismAndroid {
 			if(mAppID == null || mAppID == "" || mAppActivity == null || mIsInited)	{	return;	}
 
 			//	Run on main thread to avoid crashes
-			_activateNDKReporting(true);
 			Crittercism.initialize(mAppActivity.getApplicationContext(), mAppID, mConfig);
 			mIsInited	= true;
 		}catch(Exception e)
 		{	CLog(e.getLocalizedMessage());	}
 		
-	}
-	
-	private static void _activateNDKReporting(boolean activate)
-	{
-		if(mConfig == null) {
-			mConfig = new CrittercismConfig();
-		}
-		
-		// Attempt to set NDK Crash reporting.
-		mConfig.setNdkCrashReportingEnabled(activate);
 	}
 	
 	private static Exception _CreateException(String name, String reason, String callStack)
@@ -204,12 +192,6 @@ public class CrittercismAndroid {
 		if( mIsInited == false) { return; }
 		mDebugLog = b;
 	}
-	
-//	public static void SetNotificationTitle(String name)
-//	{
-//		if(!mIsInited || name == null)	{	return;	}
-//		Crittercism.setNotificationTitle(name);
-//	}
 	
 	public static void SetOptOutStatus(boolean optOut)
 	{
