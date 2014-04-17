@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CrittercismInit : MonoBehaviour {
 	
-	private const string CrittercismAppID	= "YOUR_APP_ID";/*Your App ID Here*/
+	private const string CrittercismAppID	= "513e480f558d6a554b000015";/*Your App ID Here*/
 	private const bool bDelaySendingAppLoad = false;
 	private const bool bShouldCollectLogcat = true;
 	private const string CustomVersionName = "CUSTOM_VERSION";/*Your Custom Version Name Here*/
