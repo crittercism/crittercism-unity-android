@@ -1,4 +1,0 @@
-INDEX VERSION 1.126+/Users/FWS/Documents/Application/crittercism-unity-android/.metadata/.plugins/org.eclipse.jdt.core
-698186031.index
-1303325272.index
-1847033499.index
