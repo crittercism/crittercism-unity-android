@@ -1,3 +1,5 @@
+*.sw[m-p]
+
 # Local
 archive/
 
@@ -8,31 +10,6 @@ Temp/
 Obj/
 UnityGenerated/
 Library/
- 
-# Build Results
-[Dd]ebug/
-[Rr]elease/
-x64/
-*_i.c
-*_p.c
-*.ilk
-*.meta
-*.obj
-*.pch
-*.pdb
-*.pgc
-*.pgd
-*.rsp
-*.sbr
-*.tlb
-*.tli
-*.tlh
-*.tmp
-*.log
-*.vspscc
-*.vssscc
-.builds
-*.apk
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
@@ -48,12 +25,6 @@ ExportedObj/
 *.unityproj
 *.booproj
  
-# =============== #
-# XCode Generated #
-# =============== #
-xcuserdata
-!xcshareddata
-
 # ============ #
 # OS generated #
 # ============ #
@@ -66,11 +37,3 @@ Icon?
 ehthumbs.db
 Thumbs.db
 
-# Test Project
-
-TestiOS/Assembly-CSharp-Editor-vs.csproj
-TestiOS/Assembly-CSharp-Editor.csproj
-TestiOS/Assembly-CSharp-Editor.pidb
-TestiOS/Assembly-CSharp-firstpass-vs.csproj
-TestiOS/Assembly-CSharp-firstpass.csproj
-TestiOS/Assembly-CSharp-firstpass.pidb
