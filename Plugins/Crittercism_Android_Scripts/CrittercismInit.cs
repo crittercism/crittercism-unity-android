@@ -1,26 +1,20 @@
 using UnityEngine;
 using System.Collections;
 
-public class CrittercismInit : MonoBehaviour {
-	
-	private const string CrittercismAppID	= "";/*Your App ID Here*/
-	private const bool bDelaySendingAppLoad = false;
-	private const bool bShouldCollectLogcat = false;
-	private const string CustomVersionName = "";/*Your Custom Version Name Here*/
-	void Awake () {
-		
-#if UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2
-#else
-		CrittercismAndroid.Init(CrittercismAppID, bDelaySendingAppLoad, bShouldCollectLogcat, CustomVersionName);
-#endif
+public class CrittercismInit : MonoBehaviour
+{
+    /// <summary>
+    /// Your Crittercism App ID.  Every app has a special identifier that allows Crittercism
+    /// to associate error monitoring data with your app.  Your app ID can be found on the
+    /// "App Settings" page of the app you are trying to monitor.
+    /// See the Crittercism portal https://app.crittercism.com/
+    /// </summary>
+    /// <example>A real app ID looks like this:  5671d3b6f7c78a7243000a05</example>
+	private const string CrittercismAppID = "5212a00d4002056b0b000004";
 
-#if UNITY_3_3 || UNITY_3_4 || UNITY_3_4_1 || UNITY_3_4_2
-#else
-		Destroy(this);
-#endif
-	}
-	
-	void Update() {
-		CrittercismAndroid.Update();
-	}
+    void Awake ()
+    {
+        CrittercismAndroid.Init (CrittercismAppID);
+        Destroy (this);
+    }
 }
