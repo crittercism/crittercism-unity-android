@@ -165,17 +165,65 @@ public static class CrittercismAndroid
 		}
 
 		/// <summary>
-		/// Leave a breadcrumb for tracking.
+		/// Begin a transaction to track ex. login
 		/// </summary>
-		static public void LeaveBreadcrumb (string l)
+		static public void BeginTransaction (string l)
 		{
 				if (!isInitialized) {
 						return;
 				}
 
-				mCrittercismsPlugin.CallStatic ("leaveBreadcrumb", l);
+				mCrittercismsPlugin.CallStatic ("beginTransaction", l);
 		}
 
+		/// <summary>
+		/// Ends a tracked transaction ex. login was successful
+		/// </summary>
+		static public void EndTransaction (string l)
+		{
+				if (!isInitialized) {
+					return;
+				}
+	
+				mCrittercismsPlugin.CallStatic ("endTransaction", l);
+		}
+	
+		/// <summary>
+		/// Fails a tracked transaction ex. login error
+		/// </summary>
+		static public void FailTransaction (string l)
+		{
+				if (!isInitialized) {
+					return;
+				}
+		
+				mCrittercismsPlugin.CallStatic ("failTransaction", l);
+		}
+	
+		/// <summary>
+		/// Set a value for a transaction ex. shopping cart value
+		/// </summary>
+		static public void SetTransactionValue (string l, int i)
+		{
+				if (!isInitialized) {
+					return;
+				}
+	
+				mCrittercismsPlugin.CallStatic ("setTransactionValue", l, i);
+		}
+	
+		/// <summary>
+		/// Get the current value of the tracked transaction
+		/// </summary>
+		static public void GetTransactionValue (string l)
+		{
+				if (!isInitialized) {
+					return;
+				}
+		
+				mCrittercismsPlugin.CallStatic ("getTransactionValue", l);
+		}
+	
 		static private void _OnUnresolvedExceptionHandler (object sender, System.UnhandledExceptionEventArgs args)
 		{
 				if (!isInitialized || args == null || args.ExceptionObject == null) {
