@@ -115,13 +115,13 @@ public static class CrittercismAndroid
 	/// <summary>
 	/// Set if whether the user is opting to use crittercism
 	/// </summary></param>
-	public static void SetOptOut (bool s)
+	public static void SetOptOut (bool optOutStatus)
 	{
 		if (!isInitialized) {
 			return;
 		}
 		
-		mCrittercismsPlugin.CallStatic<bool> ("setOptOutStatus", s);
+		mCrittercismsPlugin.CallStatic<bool> ("setOptOutStatus", optOutStatus);
 	}
 	
 	/// <summary>
@@ -167,73 +167,73 @@ public static class CrittercismAndroid
 	/// <summary>
 	/// Leave a breadcrumb for tracking.
 	/// </summary>
-	static public void LeaveBreadcrumb (string l)
+	static public void LeaveBreadcrumb (string breadcrumb)
 	{
 		if (!isInitialized) {
 			return;
 		}
 		
-		mCrittercismsPlugin.CallStatic ("leaveBreadcrumb", l);
+		mCrittercismsPlugin.CallStatic ("leaveBreadcrumb", breadcrumb);
 	}
 	
 	/// <summary>
 	/// Begin a transaction to track ex. login
 	/// </summary>
-	static public void BeginTransaction (string l)
+	static public void BeginTransaction (string transactionName)
 	{
 		if (!isInitialized) {
 			return;
 		}
 		
-		mCrittercismsPlugin.CallStatic ("beginTransaction", l);
+		mCrittercismsPlugin.CallStatic ("beginTransaction", transactionName);
 	}
 	
 	/// <summary>
 	/// Ends a tracked transaction ex. login was successful
 	/// </summary>
-	static public void EndTransaction (string l)
+	static public void EndTransaction (string transactionName)
 	{
 		if (!isInitialized) {
 			return;
 		}
 		
-		mCrittercismsPlugin.CallStatic ("endTransaction", l);
+		mCrittercismsPlugin.CallStatic ("endTransaction", transactionName);
 	}
 	
 	/// <summary>
 	/// Fails a tracked transaction ex. login error
 	/// </summary>
-	static public void FailTransaction (string l)
+	static public void FailTransaction (string transactionName)
 	{
 		if (!isInitialized) {
 			return;
 		}
 		
-		mCrittercismsPlugin.CallStatic ("failTransaction", l);
+		mCrittercismsPlugin.CallStatic ("failTransaction", transactionName);
 	}
 	
 	/// <summary>
 	/// Set a value for a transaction ex. shopping cart value
 	/// </summary>
-	static public void SetTransactionValue (string l, int i)
+	static public void SetTransactionValue (string transactionName, int value)
 	{
 		if (!isInitialized) {
 			return;
 		}
-		
-		mCrittercismsPlugin.CallStatic ("setTransactionValue", l, i);
+
+		mCrittercismsPlugin.CallStatic ("setTransactionValue", transactionName, value);
 	}
 	
 	/// <summary>
 	/// Get the current value of the tracked transaction
 	/// </summary>
-	static public int GetTransactionValue (string l)
+	static public int GetTransactionValue (string transactionName)
 	{
 		if (!isInitialized) {
 			return -1;
 		}
 		
-		return mCrittercismsPlugin.CallStatic<int> ("getTransactionValue", l);
+		return mCrittercismsPlugin.CallStatic<int> ("getTransactionValue", transactionName);
 	}
 	
 	static private void _OnUnresolvedExceptionHandler (object sender, System.UnhandledExceptionEventArgs args)
