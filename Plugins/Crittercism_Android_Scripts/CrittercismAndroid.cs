@@ -23,6 +23,11 @@ public static class CrittercismAndroid
 		/// </summary>
 		public static void Init (string appID)
 		{
+				Init (appID, new CrittercismConfig ());
+		}
+
+		public static void Init (string appID, CrittercismConfig config)
+		{
 				if (Application.platform != RuntimePlatform.Android) {
 						System.Console.Write ("CrittercismAndroid only supports the Android platform. Crittercism will not be enabled");
 						return;
@@ -44,13 +49,12 @@ public static class CrittercismAndroid
 						return;
 				}
 
-				mCrittercismsPlugin.CallStatic ("initialize", objActivity, appID);
+				mCrittercismsPlugin.CallStatic ("initialize", objActivity, appID, config.GetAndroidConfig ());
 
 				System.AppDomain.CurrentDomain.UnhandledException += _OnUnresolvedExceptionHandler;
 				Application.RegisterLogCallback (_OnDebugLogCallbackHandler);
 
 				isInitialized = true;
-
 		}
 
 		static private void doLogError (string crittercismMethod, System.Exception e)
