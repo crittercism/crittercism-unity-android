@@ -1,3 +1,6 @@
+#if UNITY_ANDROID && !UNITY_EDITOR
+#define CRITTERCISM_ENABLED
+#endif
 
 using UnityEngine;
 using System.Collections;
@@ -13,49 +16,52 @@ public static class CrittercismAndroid
 		static bool _ShowDebugOnOnRelease = true;
 		private static bool isInitialized = false;
 		private static readonly string CRITTERCISM_CLASS = "com.crittercism.app.Crittercism";
-		private static AndroidJavaClass mCrittercismsPlugin = null;
+#if CRITTERCISM_ENABLED
+        private static AndroidJavaClass mCrittercismsPlugin = null;
+#endif
 
-		/// <summary>
+        /// <summary>
 		/// Description:
 		/// Start Crittercism for Unity, will start crittercism for android if it is not already active.
 		/// Parameters:
 		/// appID: Crittercisms Provided App ID for this application
 		/// </summary>
 		public static void Init (string appID)
-		{
+        {
 				Init (appID, new CrittercismConfig ());
-		}
+        }
 
-		public static void Init (string appID, CrittercismConfig config)
-		{
-				if (Application.platform != RuntimePlatform.Android) {
-						System.Console.Write ("CrittercismAndroid only supports the Android platform. Crittercism will not be enabled");
-						return;
-				}
+        public static void Init(string appID, CrittercismConfig config)
+        {
+#if CRITTERCISM_ENABLED
+            if (isInitialized)
+            {
+                UnityEngine.Debug.Log("CrittercismAndroid is already initialized.");
+                return;
+            }
 
-				if (isInitialized) {
-						System.Console.Write ("CrittercismAndroid is already initialized.");
-						return;
-				}
+            UnityEngine.Debug.Log("Initializing Crittercism with app id " + appID);
 
-				UnityEngine.Debug.Log ("Initializing Crittercism with app id " + appID);
+            AndroidJavaClass cls_UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject objActivity = cls_UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
 
-				AndroidJavaClass cls_UnityPlayer = new AndroidJavaClass ("com.unity3d.player.UnityPlayer");
-				AndroidJavaObject objActivity = cls_UnityPlayer.GetStatic<AndroidJavaObject> ("currentActivity");
+            mCrittercismsPlugin = new AndroidJavaClass(CRITTERCISM_CLASS);
+            if (mCrittercismsPlugin == null)
+            {
+                UnityEngine.Debug.Log("CrittercismAndroid failed to initialize.  Unable to find class " + CRITTERCISM_CLASS);
+                return;
+            }
 
-				mCrittercismsPlugin = new AndroidJavaClass (CRITTERCISM_CLASS);
-				if (mCrittercismsPlugin == null) {
-						System.Console.Write ("CrittercismAndroid failed to initialize.  Unable to find class " + CRITTERCISM_CLASS);
-						return;
-				}
+            _CallPluginStatic("initialize", objActivity, appID, config.GetAndroidConfig());
 
-				mCrittercismsPlugin.CallStatic ("initialize", objActivity, appID, config.GetAndroidConfig ());
+            System.AppDomain.CurrentDomain.UnhandledException += _OnUnresolvedExceptionHandler;
+            Application.RegisterLogCallback(_OnDebugLogCallbackHandler);
 
-				System.AppDomain.CurrentDomain.UnhandledException += _OnUnresolvedExceptionHandler;
-				Application.RegisterLogCallback (_OnDebugLogCallbackHandler);
-
-				isInitialized = true;
-		}
+            isInitialized = true;
+#else
+            UnityEngine.Debug.Log("CrittercismAndroid only supports the Android platform. Crittercism will not be enabled");
+#endif
+        }
 
 		static private void doLogError (string crittercismMethod, System.Exception e)
 		{
@@ -76,17 +82,9 @@ public static class CrittercismAndroid
 						files [i] = frame.GetFileName ();
 						lineNumbers [i] = frame.GetFileLineNumber ();
 				}
-        
-        
-				mCrittercismsPlugin.CallStatic (
-            crittercismMethod, 
-            e.GetType ().Name, 
-            e.Message, 
-            classes, 
-            methods, 
-            files, 
-            lineNumbers);
 
+                _CallPluginStatic(crittercismMethod,
+                    e.GetType().Name, e.Message, classes, methods, files, lineNumbers);
 		}
 
 		static private void logCrash (System.Exception e)
@@ -112,7 +110,7 @@ public static class CrittercismAndroid
 						return false;
 				}
 
-				return mCrittercismsPlugin.CallStatic<bool> ("getOptOutStatus");
+				return _CallPluginStatic<bool> ("getOptOutStatus");
 		}
 
 
@@ -125,7 +123,7 @@ public static class CrittercismAndroid
 						return;
 				}
 
-				mCrittercismsPlugin.CallStatic<bool> ("setOptOutStatus", s);
+                _CallPluginStatic<bool>("setOptOutStatus", s);
 		}
 
 		/// <summary>
@@ -138,7 +136,7 @@ public static class CrittercismAndroid
 						return;
 				}
 
-				mCrittercismsPlugin.CallStatic ("setUsername", username);
+                _CallPluginStatic("setUsername", username);
 		}
 
 		/// <summary>
@@ -151,7 +149,7 @@ public static class CrittercismAndroid
 				}
 
 				if (keys.Length != values.Length) {
-						System.Console.Write ("Crittercism.SetMetadata given arrays of different lengths");
+						UnityEngine.Debug.Log ("Crittercism.SetMetadata given arrays of different lengths");
 						return;
 				}
 
@@ -161,12 +159,19 @@ public static class CrittercismAndroid
 		}
 
 		static public void SetValue (string key, string value)
-		{
-				AndroidJavaClass jsonObject = new AndroidJavaClass ("org.json.JSONObject");
-				jsonObject.Call ("put", key, value);
+        {
+                if (!isInitialized) {
+                    return;
+                }
+#if CRITTERCISM_ENABLED
+				AndroidJavaObject jsonObject = new AndroidJavaObject("org.json.JSONObject");
+                jsonObject.Call<AndroidJavaObject>("put", key, value);
 
-				mCrittercismsPlugin.CallStatic ("setMetadata", jsonObject);
-		}
+                //TODO: using AndroidJavaClass and AndroidJavaObject can be really expensive in C#
+                //consider add a overload method void setMetadata(string key, string value) in java side
+                _CallPluginStatic("setMetadata", jsonObject);
+#endif
+        }
 
 		/// <summary>
 		/// Leave a breadcrumb for tracking.
@@ -177,7 +182,7 @@ public static class CrittercismAndroid
 						return;
 				}
 
-				mCrittercismsPlugin.CallStatic ("leaveBreadcrumb", l);
+                _CallPluginStatic("leaveBreadcrumb", l);
 		}
 
 		static private void _OnUnresolvedExceptionHandler (object sender, System.UnhandledExceptionEventArgs args)
@@ -201,15 +206,35 @@ public static class CrittercismAndroid
 
 				if (!isInitialized) {
 						return;
-				}
+                }
 
+#if CRITTERCISM_ENABLED
 				try {
 						AndroidJavaClass pluginExceptionClass = new AndroidJavaClass ("com.crittercism.integrations.PluginException");
 						AndroidJavaObject exception = pluginExceptionClass.CallStatic<AndroidJavaObject> ("createUnityException", name, stack);
-
-						mCrittercismsPlugin.CallStatic ("_logCrashException", exception);
-				} catch (System.Exception e) {
-						System.Console.Write ("Unable to log a crash exception to Crittercism to to an unexpected error: " + e.ToString ());
+                        
+                        //TODO: using AndroidJavaClass and AndroidJavaObject can be really expensive in C#
+                        //consider add a overload method void _logCrashException(string name, string stack) in java side
+						_CallPluginStatic ("_logCrashException", exception);
+                } catch (System.Exception e) {
+						UnityEngine.Debug.Log ("Unable to log a crash exception to Crittercism to to an unexpected error: " + e.ToString ());
 				}
-		}
+#endif
+        }
+
+        static private void _CallPluginStatic(string methodName, params object[] args)
+        {
+#if CRITTERCISM_ENABLED
+            mCrittercismsPlugin.CallStatic(methodName, args);
+#endif
+        }
+
+        static private RetType _CallPluginStatic<RetType>(string methodName, params object[] args)
+        {
+#if CRITTERCISM_ENABLED
+            return mCrittercismsPlugin.CallStatic<RetType>(methodName, args);
+#else
+            return default(RetType);
+#endif
+        }
 }

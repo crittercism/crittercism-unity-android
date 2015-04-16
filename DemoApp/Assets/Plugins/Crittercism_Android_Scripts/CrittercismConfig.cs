@@ -1,38 +1,62 @@
+#if UNITY_ANDROID && !UNITY_EDITOR
+#define CRITTERCISM_ENABLED
+#endif
+
 using UnityEngine;
 using System.Collections;
 
-public class CrittercismConfig : MonoBehaviour
+public class CrittercismConfig
 {
 	private static readonly string CRITTERCISM_CONFIG_CLASS = "com.crittercism.app.CrittercismConfig";
+#if CRITTERCISM_ENABLED
 	private AndroidJavaObject mCrittercismConfig = null;
 
-	public CrittercismConfig ()
+	
+    public CrittercismConfig ()
 	{
 		mCrittercismConfig = new AndroidJavaObject(CRITTERCISM_CONFIG_CLASS);
 	}
 
-	public string GetCustomVersionName ()
+    public AndroidJavaObject GetAndroidConfig ()
+    {
+		return mCrittercismConfig;
+	}
+#endif
+
+    public string GetCustomVersionName ()
 	{
-		return mCrittercismConfig.Call<string>("getCustomVersionName");
+        return CallConfigMethod<string>("getCustomVersionName");
 	}
 
 	public void SetCustomVersionName (string customVersionName)
 	{
-		mCrittercismConfig.Call ("setCustomVersionName", customVersionName);
+        CallConfigMethod("setCustomVersionName", customVersionName);
 	}
 
 	public bool IsLogcatReportingEnabled ()
 	{
-		return mCrittercismConfig.Call<bool> ("isLogcatReportingEnabled");
+        return CallConfigMethod<bool>("isLogcatReportingEnabled");
 	}
 
 	public void SetLogcatReportingEnabled (bool shouldCollectLogcat)
 	{
-		mCrittercismConfig.Call ("setLogcatReportingEnabled", shouldCollectLogcat);
-	}
+        CallConfigMethod("setLogcatReportingEnabled", shouldCollectLogcat);
+    }
+    
+    void CallConfigMethod(string methodName, params object[] args)
+    {
+#if CRITTERCISM_ENABLED
+        mCrittercismConfig.Call(methodName, args);
+#endif
+    }
 
-	public AndroidJavaObject GetAndroidConfig () {
-		return mCrittercismConfig;
-	}
+    RetType CallConfigMethod<RetType>(string methodName, params object[] args)
+    {
+#if CRITTERCISM_ENABLED
+        return mCrittercismConfig.Call<RetType>(methodName, args);
+#else
+        return default(RetType);
+#endif
+    }
 }
 

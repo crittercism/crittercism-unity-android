@@ -10,21 +10,23 @@ public class CrittercismTestGUI : MonoBehaviour
 
         int screenButtonHeight = Screen.height / 8;
 
-        if (GUI.Button (new Rect (0, 0, Screen.width, screenButtonHeight), "Leave breadcrumb", customStyle)) {
+        if (GUI.Button (new Rect (0, 0, Screen.width, screenButtonHeight), "Leave Breadcrumb", customStyle)) {
             CrittercismAndroid.LeaveBreadcrumb ("BreadCrumb");
         }
 
-        if (GUI.Button (new Rect (0, screenButtonHeight, Screen.width, screenButtonHeight), "Set User Metadata", customStyle)) {
-            CrittercismAndroid.SetUsername ("MommaCritter");
-            CrittercismAndroid.SetValue ("5", "Game Level");
-            CrittercismAndroid.SetValue ("Crashes a lot", "Status");
+        if (GUI.Button (new Rect (0, screenButtonHeight, Screen.width, screenButtonHeight), "Set Username", customStyle)) {
+            CrittercismAndroid.SetUsername("MommaCritter");
         }
 
-        if (GUI.Button (new Rect (0, screenButtonHeight * 2, Screen.width, screenButtonHeight), "C# Crash", customStyle)) {
+        if (GUI.Button(new Rect(0, screenButtonHeight * 2, Screen.width, screenButtonHeight), "Set Metadata", customStyle)) {
+            CrittercismAndroid.SetMetadata(new string[] { "Game Level", "Status" }, new string[] { "5", "Crashes a lot" });
+        }
+
+        if (GUI.Button (new Rect (0, screenButtonHeight * 3, Screen.width, screenButtonHeight), "C# Crash", customStyle)) {
             causeDivideByZeroException ();
         }
 
-        if (GUI.Button (new Rect (0, screenButtonHeight * 3, Screen.width, screenButtonHeight), "C# Handled Exception", customStyle)) {
+        if (GUI.Button (new Rect (0, screenButtonHeight * 4, Screen.width, screenButtonHeight), "C# Handled Exception", customStyle)) {
             try {
                 causeDivideByZeroException ();
             } catch (System.Exception e) {
@@ -32,7 +34,7 @@ public class CrittercismTestGUI : MonoBehaviour
             }
         }
 
-        if (GUI.Button (new Rect (0, screenButtonHeight * 4, Screen.width, screenButtonHeight), "C# Null Pointer Exception", customStyle)) {
+        if (GUI.Button (new Rect (0, screenButtonHeight * 5, Screen.width, screenButtonHeight), "C# Null Pointer Exception", customStyle)) {
             causeNullPointerException ();
         }
     }
