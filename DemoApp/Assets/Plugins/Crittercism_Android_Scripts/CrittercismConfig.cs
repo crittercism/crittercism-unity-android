@@ -1,38 +1,60 @@
+#if UNITY_ANDROID && !UNITY_EDITOR
+#define CRITTERCISM_ENABLED
+#endif
+
 using UnityEngine;
 using System.Collections;
 
-public class CrittercismConfig : MonoBehaviour
+public class CrittercismConfig
 {
-	private static readonly string CRITTERCISM_CONFIG_CLASS = "com.crittercism.app.CrittercismConfig";
-	private AndroidJavaObject mCrittercismConfig = null;
+		private static readonly string CRITTERCISM_CONFIG_CLASS = "com.crittercism.app.CrittercismConfig";
+#if CRITTERCISM_ENABLED
+		private AndroidJavaObject mCrittercismConfig = null;
 
-	public CrittercismConfig ()
-	{
-		mCrittercismConfig = new AndroidJavaObject(CRITTERCISM_CONFIG_CLASS);
-	}
+		public CrittercismConfig()
+		{
+				mCrittercismConfig = new AndroidJavaObject(CRITTERCISM_CONFIG_CLASS);
+		}
 
-	public string GetCustomVersionName ()
-	{
-		return mCrittercismConfig.Call<string>("getCustomVersionName");
-	}
+		public AndroidJavaObject GetAndroidConfig()
+		{
+				return mCrittercismConfig;
+		}
+#endif
 
-	public void SetCustomVersionName (string customVersionName)
-	{
-		mCrittercismConfig.Call ("setCustomVersionName", customVersionName);
-	}
+		public string GetCustomVersionName()
+		{
+				return CallConfigMethod<string>("getCustomVersionName");
+		}
 
-	public bool IsLogcatReportingEnabled ()
-	{
-		return mCrittercismConfig.Call<bool> ("isLogcatReportingEnabled");
-	}
+		public void SetCustomVersionName(string customVersionName)
+		{
+				CallConfigMethod("setCustomVersionName", customVersionName);
+		}
 
-	public void SetLogcatReportingEnabled (bool shouldCollectLogcat)
-	{
-		mCrittercismConfig.Call ("setLogcatReportingEnabled", shouldCollectLogcat);
-	}
+		public bool IsLogcatReportingEnabled()
+		{
+				return CallConfigMethod<bool>("isLogcatReportingEnabled");
+		}
 
-	public AndroidJavaObject GetAndroidConfig () {
-		return mCrittercismConfig;
-	}
+		public void SetLogcatReportingEnabled(bool shouldCollectLogcat)
+		{
+				CallConfigMethod("setLogcatReportingEnabled", shouldCollectLogcat);
+		}
+
+		void CallConfigMethod(string methodName, params object[] args)
+		{
+#if CRITTERCISM_ENABLED
+				mCrittercismConfig.Call(methodName, args);
+#endif
+		}
+
+		RetType CallConfigMethod<RetType>(string methodName, params object[] args)
+		{
+#if CRITTERCISM_ENABLED
+				return mCrittercismConfig.Call<RetType>(methodName, args);
+#else
+				return default(RetType);
+#endif
+		}
 }
-
