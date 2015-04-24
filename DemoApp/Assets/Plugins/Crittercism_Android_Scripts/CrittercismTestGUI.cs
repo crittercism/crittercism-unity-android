@@ -8,7 +8,7 @@ public class CrittercismTestGUI : MonoBehaviour
         GUIStyle customStyle = new GUIStyle (GUI.skin.button);
         customStyle.fontSize = 30;
 
-        int screenButtonHeight = Screen.height / 8;
+        int screenButtonHeight = Screen.height / 10;
 
         if (GUI.Button (new Rect (0, 0, Screen.width, screenButtonHeight), "Leave Breadcrumb", customStyle)) {
             CrittercismAndroid.LeaveBreadcrumb ("BreadCrumb");
@@ -22,11 +22,11 @@ public class CrittercismTestGUI : MonoBehaviour
             CrittercismAndroid.SetMetadata(new string[] { "Game Level", "Status" }, new string[] { "5", "Crashes a lot" });
         }
 
-        if (GUI.Button (new Rect (0, screenButtonHeight * 3, Screen.width, screenButtonHeight), "C# Crash", customStyle)) {
+        if (GUI.Button (new Rect (0, screenButtonHeight * 2, Screen.width, screenButtonHeight), "C# Crash", customStyle)) {
             causeDivideByZeroException ();
         }
 
-        if (GUI.Button (new Rect (0, screenButtonHeight * 4, Screen.width, screenButtonHeight), "C# Handled Exception", customStyle)) {
+        if (GUI.Button (new Rect (0, screenButtonHeight * 3, Screen.width, screenButtonHeight), "C# Handled Exception", customStyle)) {
             try {
                 causeDivideByZeroException ();
             } catch (System.Exception e) {
@@ -34,12 +34,33 @@ public class CrittercismTestGUI : MonoBehaviour
             }
         }
 
-        if (GUI.Button (new Rect (0, screenButtonHeight * 5, Screen.width, screenButtonHeight), "C# Null Pointer Exception", customStyle)) {
-            causeNullPointerException ();
-        }
-    }
+        if (GUI.Button (new Rect (0, screenButtonHeight * 4, Screen.width, screenButtonHeight), "C# Null Pointer Exception", customStyle)) {
+			causeNullPointerException ();
+		}
 
-    // Demo stacktraces by calling a few interim methods before crashing
+		if (GUI.Button (new Rect (0, screenButtonHeight * 5, Screen.width, screenButtonHeight), "Begin Transaction", customStyle)) {
+			CrittercismAndroid.BeginTransaction("UnityAndroid");
+		}
+
+		if (GUI.Button (new Rect (0, screenButtonHeight * 6, Screen.width, screenButtonHeight), "End Transaction", customStyle)) {
+			CrittercismAndroid.EndTransaction("UnityAndroid");
+		}
+
+		if (GUI.Button (new Rect (0, screenButtonHeight * 7, Screen.width, screenButtonHeight), "Fail Transaction", customStyle)) {
+			CrittercismAndroid.FailTransaction("UnityAndroid");
+		}
+
+		if (GUI.Button (new Rect (0, screenButtonHeight * 8, Screen.width, screenButtonHeight), "Set Transaction Value", customStyle)) {
+			CrittercismAndroid.SetTransactionValue("UnityAndroid", 500);
+		}
+
+		if (GUI.Button (new Rect (0, screenButtonHeight * 9, Screen.width, screenButtonHeight), "Get Transaction Value", customStyle)) {
+			int value = CrittercismAndroid.GetTransactionValue("UnityAndroid");
+			Debug.Log("TransactionValue is: " + value);
+		}
+	}
+	
+	// Demo stacktraces by calling a few interim methods before crashing
     void causeDivideByZeroException ()
     {
         interimMethod1 ("hi mom", 42);
