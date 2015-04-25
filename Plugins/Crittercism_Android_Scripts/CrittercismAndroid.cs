@@ -62,43 +62,56 @@ public static class CrittercismAndroid
 #endif
 		}
 
-		static private void doLogError (string crittercismMethod, System.Exception e)
-		{
-				if (!isInitialized) {
-						return;
-				}
-
-				StackTrace stackTrace = new StackTrace (e, true);
-				string[] classes = new string[stackTrace.FrameCount];
-				string[] methods = new string[stackTrace.FrameCount];
-				string[] files = new string[stackTrace.FrameCount];
-				int[] lineNumbers = new int[stackTrace.FrameCount];
-
-				for (int i = 0; i < stackTrace.FrameCount; i++) {
-						StackFrame frame = stackTrace.GetFrame (i);
-						classes [i] = frame.GetMethod ().DeclaringType.Name;
-						methods [i] = frame.GetMethod ().Name;
-						files [i] = frame.GetFileName ();
-						lineNumbers [i] = frame.GetFileLineNumber ();
-				}
-
-				_CallPluginStatic (crittercismMethod,
-					e.GetType ().Name, e.Message, classes, methods, files, lineNumbers);
+	private static string StackTrace(System.Exception e)
+	{
+		// Allowing for the fact that the "name" and "reason" of the outermost
+		// exception e are already shown in the Crittercism portal, we don't
+		// need to repeat that bit of info.  However, for InnerException's, we
+		// will include this information in the StackTrace .  The horizontal
+		// lines (hyphens) separate InnerException's from each other and the
+		// outermost Exception e .
+		string answer = e.StackTrace;
+		// Using seen for cycle detection to break cycling.
+		List<System.Exception> seen = new List<System.Exception>();
+		seen.Add(e);
+		if (answer != null) {
+			// There has to be some way of telling where InnerException ie stacktrace
+			// ends and main Exception e stacktrace begins.  This is it.
+			answer = ((e.GetType().FullName + " : " + e.Message + "\r\n")
+			          + answer);
+			System.Exception ie = e.InnerException;
+			while ((ie != null) && (seen.IndexOf(ie) < 0)) {
+				seen.Add(ie);
+				answer = ((ie.GetType().FullName + " : " + ie.Message + "\r\n")
+				          + (ie.StackTrace + "\r\n")
+				          + answer);
+				ie = ie.InnerException;
+			}
+		} else {
+			answer = "";
 		}
+		return answer;
+	}
+	
+	/// <summary>
+	/// Log an exception that has been handled in code.
+	/// This exception will be reported to the Crittercism portal.
+	/// </summary>
+    public static void LogHandledException(System.Exception e)
+	{
+		string name = e.GetType().FullName;
+		string message = e.Message;
+		string stack = StackTrace(e);
+		_CallPluginStatic("_logHandledException", name, message, stack);
+	}
 
-		static private void logCrash (System.Exception e)
-		{
-				doLogError ("_logCrashException", e);
-		}
-
-		/// <summary>
-		/// Log an exception that has been handled in code.
-		/// This exception will be reported to the Crittercism portal.
-		/// </summary>
-		static public void LogHandledException (System.Exception e)
-		{
-				doLogError ("_logHandledException", e);
-		}
+	private static void LogUnhandledException(System.Exception e)
+	{
+		string name = e.GetType().FullName;
+		string message = e.Message;
+		string stack = StackTrace(e);
+		_CallPluginStatic("_logCrashException", name, message, stack);
+	}
 
 		/// <summary>
 		/// Retrieve whether the user is optted out of Crittercism.
