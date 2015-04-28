@@ -140,7 +140,6 @@ public static class CrittercismAndroid
 		if (!isInitialized) {
 			return;
 		}
-
 		_CallPluginStatic ("setUsername", username);
 	}
 
