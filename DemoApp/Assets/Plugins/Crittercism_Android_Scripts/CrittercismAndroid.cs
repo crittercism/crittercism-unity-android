@@ -247,10 +247,10 @@ public static class CrittercismAndroid
 		if (!isInitialized || args == null || args.ExceptionObject == null) {
 			return;
 		}
-		if (args.ExceptionObject.GetType () != typeof(System.Exception)) {
-			return;
+		System.Exception e = args.ExceptionObject as System.Exception;
+		if (e != null) {
+			LogUnhandledException (e);
 		}
-		LogUnhandledException ((System.Exception)args.ExceptionObject);
 	}
 
 	static private void _OnDebugLogCallbackHandler (string name, string stack, LogType type)
