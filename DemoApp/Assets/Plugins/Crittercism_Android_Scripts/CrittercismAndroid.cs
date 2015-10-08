@@ -255,14 +255,14 @@ public static class CrittercismAndroid
 
 	static private void _OnDebugLogCallbackHandler (string name, string stack, LogType type)
 	{
-		if (LogType.Assert != type && LogType.Exception != type) {
+		if (LogType.Exception != type) {
 			return;
 		}
 		if (!isInitialized) {
 			return;
 		}
 #if CRITTERCISM_ENABLED
-		if (LogType.Exception == type || LogType.Assert == type) {
+		if (LogType.Exception == type) {
 			if (Application.platform == RuntimePlatform.Android) {
 				_CallPluginStatic ("_logCrashException", name, name, stack);
 			}
