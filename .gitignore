@@ -11,6 +11,32 @@ Obj/
 UnityGenerated/
 Library/
 
+# ============= #
+# Build Results #
+# ============= #
+[Dd]ebug/
+[Rr]elease/
+x64/
+*_i.c
+*_p.c
+*.ilk
+*.obj
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.log
+*.vspscc
+*.vssscc
+.builds
+*MrsCritter*
+*TestApp*
+
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
 # ===================================== #
