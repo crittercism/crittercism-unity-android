@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 public static class CrittercismAndroid
 {
@@ -46,11 +47,11 @@ public static class CrittercismAndroid
 		}
 		using (var cls_UnityPlayer = new AndroidJavaClass ("com.unity3d.player.UnityPlayer")) {
 			using (var objActivity = cls_UnityPlayer.GetStatic<AndroidJavaObject> ("currentActivity")) {
-				_CallPluginStatic ("initialize", objActivity, appID, config.GetAndroidConfig ());
+				PluginCallStatic ("initialize", objActivity, appID, config.GetAndroidConfig ());
 			}
 		}
-		System.AppDomain.CurrentDomain.UnhandledException += _OnUnresolvedExceptionHandler;
-		Application.RegisterLogCallback (_OnDebugLogCallbackHandler);
+		System.AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+		Application.logMessageReceived += OnLogMessageReceived;
 		isInitialized = true;
 #else
 		UnityEngine.Debug.Log ("CrittercismAndroid only supports the Android platform. Crittercism will not be enabled");
@@ -97,7 +98,7 @@ public static class CrittercismAndroid
 		string name = e.GetType ().FullName;
 		string message = e.Message;
 		string stack = StackTrace (e);
-		_CallPluginStatic ("_logHandledException", name, message, stack);
+		PluginCallStatic ("_logHandledException", name, message, stack);
 	}
 
 	private static void LogUnhandledException (System.Exception e)
@@ -105,7 +106,7 @@ public static class CrittercismAndroid
 		string name = e.GetType ().FullName;
 		string message = e.Message;
 		string stack = StackTrace (e);
-		_CallPluginStatic ("_logCrashException", name, message, stack);
+		PluginCallStatic (logUnhandledExceptionAsCrash ? "_logCrashException" : "_logHandledException", name, message, stack);
 	}
 
 	/// <summary>
@@ -116,7 +117,7 @@ public static class CrittercismAndroid
 		if (!isInitialized) {
 			return false;
 		}
-		return _CallPluginStatic<bool> ("getOptOutStatus");
+		return PluginCallStatic<bool> ("getOptOutStatus");
 	}
 
 
@@ -128,25 +129,25 @@ public static class CrittercismAndroid
 		if (!isInitialized) {
 			return;
 		}
-		_CallPluginStatic<bool> ("setOptOutStatus", optOutStatus);
+		PluginCallStatic<bool> ("setOptOutStatus", optOutStatus);
 	}
 
 	/// <summary>
 	/// Set the Username of the user
 	/// This will be reported in the Crittercism Meta.
 	/// </summary>
-	static public void SetUsername (string username)
+	public static void SetUsername (string username)
 	{
 		if (!isInitialized) {
 			return;
 		}
-		_CallPluginStatic ("setUsername", username);
+		PluginCallStatic ("setUsername", username);
 	}
 
 	/// <summary>
 	/// Add a custom value to the Crittercism Meta.
 	/// </summary>
-	static public void SetMetadata (string[] keys, string[] values)
+	public static void SetMetadata (string[] keys, string[] values)
 	{
 		if (!isInitialized) {
 			return;
@@ -160,7 +161,7 @@ public static class CrittercismAndroid
 		}
 	}
 
-	static public void SetValue (string key, string value)
+	public static void SetValue (string key, string value)
 	{
 		if (!isInitialized) {
 			return;
@@ -171,7 +172,7 @@ public static class CrittercismAndroid
 
 			//TODO: using AndroidJavaClass and AndroidJavaObject can be really expensive in C#
 			//consider add a overload method void setMetadata(string key, string value) in java side
-			_CallPluginStatic ("setMetadata", jsonObject);
+			PluginCallStatic ("setMetadata", jsonObject);
 		}
 #endif
 	}
@@ -179,70 +180,70 @@ public static class CrittercismAndroid
 	/// <summary>
 	/// Leave a breadcrumb for tracking.
 	/// </summary>
-	static public void LeaveBreadcrumb (string breadcrumb)
+	public static void LeaveBreadcrumb (string breadcrumb)
 	{
 		if (!isInitialized) {
 			return;
 		}
-		_CallPluginStatic ("leaveBreadcrumb", breadcrumb);
+		PluginCallStatic ("leaveBreadcrumb", breadcrumb);
 	}
 		
 	/// <summary>
 	/// Begin a transaction to track ex. login
 	/// </summary>
-	static public void BeginTransaction (string transactionName)
+	public static void BeginTransaction (string transactionName)
 	{
 		if (!isInitialized) {
 			return;
 		}
-		_CallPluginStatic ("beginTransaction", transactionName);
+		PluginCallStatic ("beginTransaction", transactionName);
 	}
 		
 	/// <summary>
 	/// Ends a tracked transaction ex. login was successful
 	/// </summary>
-	static public void EndTransaction (string transactionName)
+	public static void EndTransaction (string transactionName)
 	{
 		if (!isInitialized) {
 			return;
 		}
-		_CallPluginStatic ("endTransaction", transactionName);
+		PluginCallStatic ("endTransaction", transactionName);
 	}
 		
 	/// <summary>
 	/// Fails a tracked transaction ex. login error
 	/// </summary>
-	static public void FailTransaction (string transactionName)
+	public static void FailTransaction (string transactionName)
 	{
 		if (!isInitialized) {
 			return;
 		}
-		_CallPluginStatic ("failTransaction", transactionName);
+		PluginCallStatic ("failTransaction", transactionName);
 	}
 		
 	/// <summary>
 	/// Set a value for a transaction ex. shopping cart value
 	/// </summary>
-	static public void SetTransactionValue (string transactionName, int value)
+	public static void SetTransactionValue (string transactionName, int value)
 	{
 		if (!isInitialized) {
 			return;
 		}
-		_CallPluginStatic ("setTransactionValue", transactionName, value);
+		PluginCallStatic ("setTransactionValue", transactionName, value);
 	}
 		
 	/// <summary>
 	/// Get the current value of the tracked transaction
 	/// </summary>
-	static public int GetTransactionValue (string transactionName)
+	public static int GetTransactionValue (string transactionName)
 	{
 		if (!isInitialized) {
 			return -1;
 		}
-		return _CallPluginStatic<int> ("getTransactionValue", transactionName);
+		return PluginCallStatic<int> ("getTransactionValue", transactionName);
 	}
 		
-	static private void _OnUnresolvedExceptionHandler (object sender, System.UnhandledExceptionEventArgs args)
+	private static void OnUnhandledException (object sender, System.UnhandledExceptionEventArgs args)
 	{
 		if (!isInitialized || args == null || args.ExceptionObject == null) {
 			return;
@@ -253,7 +254,19 @@ public static class CrittercismAndroid
 		}
 	}
 
-	static private void _OnDebugLogCallbackHandler (string name, string stack, LogType type)
+	private static volatile bool logUnhandledExceptionAsCrash = false;
+	
+	public static void SetLogUnhandledExceptionAsCrash (bool value)
+	{
+		logUnhandledExceptionAsCrash = value;
+	}
+	
+	public static bool GetLogUnhandledExceptionAsCrash ()
+	{
+		return logUnhandledExceptionAsCrash;
+	}
+
+	private static void OnLogMessageReceived (string name, string stack, LogType type)
 	{
 		if (LogType.Exception != type) {
 			return;
@@ -264,20 +277,25 @@ public static class CrittercismAndroid
 #if CRITTERCISM_ENABLED
 		if (LogType.Exception == type) {
 			if (Application.platform == RuntimePlatform.Android) {
-				_CallPluginStatic ("_logCrashException", name, name, stack);
+				if (logUnhandledExceptionAsCrash) {
+					PluginCallStatic ("_logCrashException", name, name, stack);
+				} else {
+					stack = (new Regex("\r\n")).Replace(stack, "\n\tat");
+					PluginCallStatic ("_logHandledException", name, name, stack);
+				}
 			}
 		}
 #endif
 	}
 
-	static private void _CallPluginStatic (string methodName, params object[] args)
+	private static void PluginCallStatic (string methodName, params object[] args)
 	{
 #if CRITTERCISM_ENABLED
 		mCrittercismsPlugin.CallStatic (methodName, args);
 #endif
 	}
 
-	static private RetType _CallPluginStatic<RetType> (string methodName, params object[] args)
+	private static RetType PluginCallStatic<RetType> (string methodName, params object[] args)
 	{
 #if CRITTERCISM_ENABLED
 		return mCrittercismsPlugin.CallStatic<RetType> (methodName, args);
