@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
@@ -107,6 +108,19 @@ public static class CrittercismAndroid
 		string message = e.Message;
 		string stack = StackTrace (e);
 		PluginCallStatic (logUnhandledExceptionAsCrash ? "_logCrashException" : "_logHandledException", name, message, stack);
+	}
+
+	public static void LogNetworkRequest(string method,
+                                         string uriString,
+	                                     long latency,
+	                                     long bytesRead,
+	                                     long bytesSent,
+	                                     HttpStatusCode responseCode,
+	                                     WebExceptionStatus exceptionStatus) {
+		if (!isInitialized) {
+			return;
+		}
+		PluginCallStatic ("logNetworkRequest", method, uriString, latency, bytesRead, bytesSent, (int)responseCode, (int)exceptionStatus);
 	}
 
 	/// <summary>

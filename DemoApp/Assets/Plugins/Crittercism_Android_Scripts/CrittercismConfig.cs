@@ -45,12 +45,12 @@ public class CrittercismConfig
 	{
 		return CallConfigMethod<bool> ("isServiceMonitoringEnabled");
 	}
-	
+
 	public void SetServiceMonitoringEnabled (bool isServiceMonitoringEnabled)
 	{
 		CallConfigMethod ("setServiceMonitoringEnabled", isServiceMonitoringEnabled);
 	}
-	
+
 	void CallConfigMethod (string methodName, params object[] args)
 	{
 #if CRITTERCISM_ENABLED

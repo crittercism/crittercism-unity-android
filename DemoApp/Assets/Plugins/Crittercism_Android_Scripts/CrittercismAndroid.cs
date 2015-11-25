@@ -30,12 +30,7 @@ public static class CrittercismAndroid
 	/// </summary>
 	public static void Init (string appID)
 	{
-		// OLD CODE:
 		Init (appID, new CrittercismConfig ());
-		// NEW CODE:
-		//CrittercismConfig config = new CrittercismConfig ();
-		//config.SetServiceMonitoringEnabled(false);
-		//Init (appID, config);
 	}
 
 	public static void Init (string appID, CrittercismConfig config)
