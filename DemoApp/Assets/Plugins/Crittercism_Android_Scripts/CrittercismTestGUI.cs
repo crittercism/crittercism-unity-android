@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class CrittercismTestGUI : MonoBehaviour
 {
+	private CrittercismTestGUI() {
+		Debug.Log ("DidCrashOnLastLoad: " + CrittercismAndroid.DidCrashOnLastLoad ());
+		CrittercismAndroid.SetLogUnhandledExceptionAsCrash (true);
+	}
+
 	private static string[] uriStrings=new string[] {
 		"http://www.crittergerbil.com",
 		"http://www.critterhamster.com",
@@ -17,10 +22,9 @@ public class CrittercismTestGUI : MonoBehaviour
 
 	public void OnGUI ()
 	{
-		CrittercismAndroid.SetLogUnhandledExceptionAsCrash (true);
 		GUIStyle customStyle = new GUIStyle (GUI.skin.button);
 		customStyle.fontSize = 30;
-		const int numberOfButtons = 12;
+		const int numberOfButtons = 13;
 		int screenButtonHeight = Screen.height / numberOfButtons;
 		if (GUI.Button (new Rect (0, 0, Screen.width, screenButtonHeight), "Set Username", customStyle)) {
 			CrittercismAndroid.SetUsername ("MommaCritter");
@@ -91,10 +95,13 @@ public class CrittercismTestGUI : MonoBehaviour
 		if (GUI.Button (new Rect (0, 9 * screenButtonHeight, Screen.width, screenButtonHeight), "Fail Transaction", customStyle)) {
 			CrittercismAndroid.FailTransaction ("UnityAndroid");
 		}
-		if (GUI.Button (new Rect (0, 10 * screenButtonHeight, Screen.width, screenButtonHeight), "Set Transaction Value", customStyle)) {
+		if (GUI.Button (new Rect (0, 10 * screenButtonHeight, Screen.width, screenButtonHeight), "Cancel Transaction", customStyle)) {
+			CrittercismAndroid.CancelTransaction ("UnityAndroid");
+		}
+		if (GUI.Button (new Rect (0, 11 * screenButtonHeight, Screen.width, screenButtonHeight), "Set Transaction Value", customStyle)) {
 			CrittercismAndroid.SetTransactionValue ("UnityAndroid", 500);
 		}
-		if (GUI.Button (new Rect (0, 11 * screenButtonHeight, Screen.width, screenButtonHeight), "Get Transaction Value", customStyle)) {
+		if (GUI.Button (new Rect (0, 12 * screenButtonHeight, Screen.width, screenButtonHeight), "Get Transaction Value", customStyle)) {
 			int value = CrittercismAndroid.GetTransactionValue ("UnityAndroid");
 			Debug.Log ("TransactionValue is: " + value);
 		}
