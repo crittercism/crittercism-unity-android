@@ -147,6 +147,17 @@ public static class CrittercismAndroid
 	}
 
 	/// <summary>
+	/// Did the application crash on the previous load?
+	/// </summary>
+	public static bool DidCrashOnLastLoad ()
+	{
+		if (!isInitialized) {
+			return false;
+		}
+		return PluginCallStatic<bool> ("didCrashOnLastLoad");
+	}
+
+	/// <summary>
 	/// Set the Username of the user
 	/// This will be reported in the Crittercism Meta.
 	/// </summary>
@@ -212,6 +223,18 @@ public static class CrittercismAndroid
 		}
 		PluginCallStatic ("beginTransaction", transactionName);
 	}
+	
+	/// <summary>
+	/// Cancel a transaction as if it never existed.
+	/// </summary>
+	public static void CancelTransaction (string transactionName)
+	{
+		if (!isInitialized) {
+			return;
+		}
+		// TODO: Call "cancelTransaction" instead.
+		PluginCallStatic ("failTransaction", transactionName);
+	}
 		
 	/// <summary>
 	/// Ends a tracked transaction ex. login was successful
@@ -223,7 +246,7 @@ public static class CrittercismAndroid
 		}
 		PluginCallStatic ("endTransaction", transactionName);
 	}
-		
+	
 	/// <summary>
 	/// Fails a tracked transaction ex. login error
 	/// </summary>
