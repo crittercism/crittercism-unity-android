@@ -232,8 +232,7 @@ public static class CrittercismAndroid
 		if (!isInitialized) {
 			return;
 		}
-		// TODO: Call "cancelTransaction" instead.
-		PluginCallStatic ("failTransaction", transactionName);
+		PluginCallStatic ("cancelTransaction", transactionName);
 	}
 		
 	/// <summary>
